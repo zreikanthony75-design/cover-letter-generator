@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cover Letter Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .form-container {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title .step {
+            background: #3b82f6;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #374151;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .radio-option input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .file-upload {
+            border: 2px dashed #d1d5db;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f9fafb;
+        }
+
+        .file-upload:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .file-upload.drag-over {
+            border-color: #3b82f6;
+            background: #dbeafe;
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .file-upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .file-upload-text {
+            color: #6b7280;
+        }
+
+        .file-name {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: #dcfce7;
+            border-radius: 6px;
+            color: #166534;
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .output-section {
+            display: none;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .output-section.visible {
+            display: block;
+        }
+
+        .cover-letter-output {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 25px;
+            white-space: pre-wrap;
+            font-family: 'Georgia', serif;
+            line-height: 1.8;
+            font-size: 1rem;
+            color: #1f2937;
+        }
+
+        .success-banner {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .button-group .btn {
+            flex: 1;
+        }
+
+        .error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .error.visible {
+            display: block;
+        }
+
+        .tip {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #1e40af;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 Cover Letter Generator</h1>
+            <p>Create professional cover letters in seconds</p>
+        </div>
+
+        <div class="form-container">
+            <div id="errorMessage" class="error"></div>
+
+            <!-- Step 1: Resume -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="step">1</span>
+                    Your Resume
+                </h2>
+                <p style="color: #6b7280; margin-bottom: 15px;">Provide your resume so we can highlight your relevant experience.</p>
+                
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="resumeMethod" value="paste" checked onchange="toggleResumeInput()">
+                        <span>Paste text</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="resumeMethod" value="upload" onchange="toggleResumeInput()">
+                        <span>Upload PDF</span>
+                    </label>
+                </div>
+
+                <div id="pasteSection">
+                    <textarea id="resumeText" placeholder="Paste your resume content here..."></textarea>
+                </div>
+
+                <div id="uploadSection" class="hidden">
+                    <div class="file-upload" id="dropZone" onclick="document.getElementById('pdfFile').click()">
+                        <input type="file" id="pdfFile" accept=".pdf,.txt" onchange="handleFileUpload(event)">
+                        <div class="file-upload-icon">📄</div>
+                        <div class="file-upload-text">
+                            <strong>Click to upload</strong> or drag and drop<br>
+                            <small>PDF or TXT file</small>
+                        </div>
+                        <div id="fileName" class="file-name hidden"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Your Information -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="step">2</span>
+                    Your Information
+                </h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="yourName">Your Full Name *</label>
+                        <input type="text" id="yourName" placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="yourEmail">Your Email</label>
+                        <input type="email" id="yourEmail" placeholder="john.doe@email.com">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="yourPhone">Your Phone</label>
+                        <input type="tel" id="yourPhone" placeholder="(555) 123-4567">
+                    </div>
+                    <div class="form-group">
+                        <label for="yourCity">Your City, State</label>
+                        <input type="text" id="yourCity" placeholder="New York, NY">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Job Details -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="step">3</span>
+                    Job Details
+                </h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="companyName">Company Name *</label>
+                        <input type="text" id="companyName" placeholder="Acme Corporation">
+                    </div>
+                    <div class="form-group">
+                        <label for="positionTitle">Position Title *</label>
+                        <input type="text" id="positionTitle" placeholder="Software Engineer">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="hiringManager">Hiring Manager's Name (optional)</label>
+                    <input type="text" id="hiringManager" placeholder="Leave blank if unknown">
+                </div>
+            </div>
+
+            <!-- Step 4: Customization -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="step">4</span>
+                    Customize Your Letter
+                </h2>
+                
+                <div class="form-group">
+                    <label for="keySkills">Key skills/experiences to highlight from your resume</label>
+                    <textarea id="keySkills" placeholder="Example: 3 years of Python development, led a team of 5 engineers, increased sales by 20%..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="whyCompany">Why do you want to work at this company?</label>
+                    <textarea id="whyCompany" placeholder="Example: I admire the company's commitment to innovation, the recent product launch impressed me, I align with the company's mission..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="whyRole">Why are you excited about this role?</label>
+                    <textarea id="whyRole" placeholder="Example: This role combines my passion for data analysis with my interest in healthcare, the opportunity to work on large-scale systems..."></textarea>
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <button class="btn btn-primary" onclick="generateCoverLetter()">
+                ✨ Generate Cover Letter
+            </button>
+
+            <!-- Output Section -->
+            <div id="outputSection" class="output-section">
+                <div class="success-banner">
+                    <span style="font-size: 1.5rem;">✅</span>
+                    <span>Your cover letter has been generated!</span>
+                </div>
+                
+                <h2 class="section-title">📄 Your Cover Letter</h2>
+                <div id="coverLetterOutput" class="cover-letter-output"></div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="downloadCoverLetter()">
+                        📥 Download as Text
+                    </button>
+                    <button class="btn btn-secondary" onclick="copyToClipboard()">
+                        📋 Copy to Clipboard
+                    </button>
+                </div>
+                
+                <div class="tip">
+                    💡 <strong>Tip:</strong> Review and personalize the letter further before sending!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDF.js library for PDF text extraction -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <script>
+        // Set PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        let uploadedResumeText = '';
+
+        // Toggle between paste and upload
+        function toggleResumeInput() {
+            const method = document.querySelector('input[name="resumeMethod"]:checked').value;
+            const pasteSection = document.getElementById('pasteSection');
+            const uploadSection = document.getElementById('uploadSection');
+            
+            if (method === 'paste') {
+                pasteSection.classList.remove('hidden');
+                uploadSection.classList.add('hidden');
+            } else {
+                pasteSection.classList.add('hidden');
+                uploadSection.classList.remove('hidden');
+            }
+        }
+
+        // Handle file upload
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const fileName = document.getElementById('fileName');
+            fileName.textContent = '📎 ' + file.name;
+            fileName.classList.remove('hidden');
+
+            if (file.type === 'application/pdf') {
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    let text = '';
+                    
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const content = await page.getTextContent();
+                        text += content.items.map(item => item.str).join(' ') + '\n';
+                    }
+                    
+                    uploadedResumeText = text;
+                    fileName.textContent = '✅ ' + file.name + ' (loaded successfully)';
+                } catch (error) {
+                    fileName.textContent = '❌ Error reading PDF: ' + error.message;
+                    fileName.style.background = '#fef2f2';
+                    fileName.style.color = '#dc2626';
+                }
+            } else {
+                // Handle text file
+                const text = await file.text();
+                uploadedResumeText = text;
+                fileName.textContent = '✅ ' + file.name + ' (loaded successfully)';
+            }
+        }
+
+        // Drag and drop support
+        const dropZone = document.getElementById('dropZone');
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                document.getElementById('pdfFile').files = e.dataTransfer.files;
+                handleFileUpload({ target: { files: [file] } });
+            }
+        });
+
+        // Generate cover letter
+        function generateCoverLetter() {
+            // Get values
+            const yourName = document.getElementById('yourName').value.trim();
+            const yourEmail = document.getElementById('yourEmail').value.trim();
+            const yourPhone = document.getElementById('yourPhone').value.trim();
+            const yourCity = document.getElementById('yourCity').value.trim();
+            const companyName = document.getElementById('companyName').value.trim();
+            const positionTitle = document.getElementById('positionTitle').value.trim();
+            const hiringManager = document.getElementById('hiringManager').value.trim();
+            const keySkills = document.getElementById('keySkills').value.trim();
+            const whyCompany = document.getElementById('whyCompany').value.trim();
+            const whyRole = document.getElementById('whyRole').value.trim();
+
+            // Validation
+            const errorMessage = document.getElementById('errorMessage');
+            const missingFields = [];
+            
+            if (!yourName) missingFields.push('Your Name');
+            if (!companyName) missingFields.push('Company Name');
+            if (!positionTitle) missingFields.push('Position Title');
+
+            if (missingFields.length > 0) {
+                errorMessage.textContent = '⚠️ Please fill in the following required fields: ' + missingFields.join(', ');
+                errorMessage.classList.add('visible');
+                errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            
+            errorMessage.classList.remove('visible');
+
+            // Format date
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+
+            // Determine greeting
+            const greeting = hiringManager ? `Dear ${hiringManager},` : 'Dear Hiring Manager,';
+
+            // Build experience paragraph
+            const experienceParagraph = keySkills 
+                ? keySkills 
+                : 'Throughout my career, I have developed strong skills and gained valuable experience that align well with this role. My background has prepared me to take on new challenges and contribute meaningfully to your organization.';
+
+            // Build company paragraph
+            let companyParagraph = whyCompany 
+                ? whyCompany 
+                : `I am particularly drawn to ${companyName} because of its reputation and values.`;
+            
+            if (whyRole) {
+                companyParagraph += ' ' + whyRole;
+            } else {
+                companyParagraph += ' This role excites me as it aligns perfectly with my career goals and allows me to leverage my strengths.';
+            }
+
+            // Build contact info
+            let contactInfo = yourName;
+            if (yourCity) contactInfo += '\n' + yourCity;
+            if (yourEmail) contactInfo += '\n' + yourEmail;
+            if (yourPhone) contactInfo += '\n' + yourPhone;
+
+            // Generate the cover letter
+            const coverLetter = `${contactInfo}
+
+${dateStr}
+
+${companyName}
+
+${greeting}
+
+I am writing to express my strong interest in the ${positionTitle} position at ${companyName}. With my background and skills, I am confident that I would be a valuable addition to your team.
+
+${experienceParagraph}
+
+${companyParagraph}
+
+Thank you for considering my application. I am excited about the opportunity to contribute to ${companyName} and would welcome the chance to discuss how my background and skills would benefit your team. I look forward to hearing from you.
+
+Sincerely,
+
+${yourName}`;
+
+            // Display the cover letter
+            document.getElementById('coverLetterOutput').textContent = coverLetter;
+            document.getElementById('outputSection').classList.add('visible');
+            document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Download cover letter
+        function downloadCoverLetter() {
+            const coverLetter = document.getElementById('coverLetterOutput').textContent;
+            const companyName = document.getElementById('companyName').value.trim().replace(/\s+/g, '_');
+            const blob = new Blob([coverLetter], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `cover_letter_${companyName}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Copy to clipboard
+        async function copyToClipboard() {
+            const coverLetter = document.getElementById('coverLetterOutput').textContent;
+            try {
+                await navigator.clipboard.writeText(coverLetter);
+                const btn = event.target;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ Copied!';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 2000);
+            } catch (err) {
+                alert('Failed to copy. Please select the text manually.');
+            }
+        }
+    </script>
+</body>
+</html>
